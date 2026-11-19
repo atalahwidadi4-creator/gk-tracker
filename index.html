@@ -1,0 +1,352 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GK Tracker</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;background:#080e19;color:white;
+ font-family:Arial,sans-serif;padding-bottom:85px
+}
+header{padding:23px 18px;background:#111c2d}
+.logo{color:#43d9a3;font-size:25px;font-weight:bold}
+.small{color:#8998ad;font-size:12px}
+.page{display:none;padding:18px}
+.page.active{display:block}
+h2{font-size:21px}
+.card{
+ background:#142238;border:1px solid #253750;
+ border-radius:16px;padding:17px;margin-bottom:13px
+}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.number{font-size:29px;color:#43d9a3;font-weight:bold}
+button{
+ border:0;border-radius:10px;padding:13px;
+ background:#43d9a3;color:#07130f;font-weight:bold;
+ cursor:pointer
+}
+input{
+ width:100%;padding:13px;margin:7px 0;
+ background:#203047;color:white;border:0;border-radius:9px
+}
+nav{
+ position:fixed;bottom:0;left:0;right:0;
+ display:grid;grid-template-columns:repeat(4,1fr);
+ background:#111c2d;border-top:1px solid #26354a;
+ padding:10px 3px;z-index:5
+}
+nav button{
+ background:transparent;color:#8c9bb0;
+ font-size:12px;padding:8px 2px
+}
+nav button.active{color:#43d9a3}
+.match{
+ background:#142238;border-radius:13px;
+ padding:15px;margin:10px 0
+}
+.gallery{
+ display:grid;grid-template-columns:1fr 1fr;gap:10px
+}
+.gallery img,.gallery video{
+ width:100%;aspect-ratio:1;object-fit:cover;
+ border-radius:12px;background:#203047
+}
+.green{color:#43d9a3}
+.muted{color:#8c9bb0;font-size:13px}
+</style>
+</head>
+
+<body>
+
+<header>
+ <div class="logo">GK TRACKER 🧤</div>
+ <div class="small">PRO GOALKEEPER DASHBOARD</div>
+</header>
+
+<!-- MAIN -->
+<div class="page active" id="main">
+ <h2>Welcome, Goalkeeper 👋</h2>
+ <div class="card">
+  <div class="small">YOUR CAREER</div>
+  <h2>KEEP YOUR GOAL SAFE.</h2>
+  <p class="muted">Every match makes you better.</p>
+  <div class="number" id="mainSaves">23</div>
+  <div class="small">TOTAL SAVES</div>
+ </div>
+
+ <div class="grid">
+  <div class="card">
+   <div class="number" id="mainMatches">2</div>
+   <div class="muted">Matches</div>
+  </div>
+  <div class="card">
+   <div class="number" id="mainWins">2</div>
+   <div class="muted">Wins</div>
+  </div>
+  <div class="card">
+   <div class="number" id="mainGoals">3</div>
+   <div class="muted">Goals conceded</div>
+  </div>
+  <div class="card">
+   <div class="number" id="mainRate">88.5%</div>
+   <div class="muted">Save rate*</div>
+  </div>
+ </div>
+
+ <div class="card">
+  <h3>LAST MATCH</h3>
+  <div id="lastMatch">5 - 1 | 15 Saves</div>
+ </div>
+
+ <p class="muted">*Estimate based on recorded saves and goals.</p>
+</div>
+
+<!-- STATS -->
+<div class="page" id="stats">
+ <h2>📊 Statistics</h2>
+ <div class="grid">
+  <div class="card">
+   <div class="number" id="sMatches">2</div>
+   <p class="muted">Matches played</p>
+  </div>
+  <div class="card">
+   <div class="number" id="sSaves">23</div>
+   <p class="muted">Total saves</p>
+  </div>
+  <div class="card">
+   <div class="number" id="sGoals">3</div>
+   <p class="muted">Goals conceded</p>
+  </div>
+  <div class="card">
+   <div class="number" id="sWins">2</div>
+   <p class="muted">Wins</p>
+  </div>
+  <div class="card">
+   <div class="number" id="sDraws">0</div>
+   <p class="muted">Draws</p>
+  </div>
+  <div class="card">
+   <div class="number" id="sLosses">0</div>
+   <p class="muted">Losses</p>
+  </div>
+ </div>
+
+ <div class="card">
+  <h3>Save Rate</h3>
+  <div class="number" id="saveRate">88.5%</div>
+  <div style="background:#263850;height:9px;border-radius:10px">
+   <div id="rateBar" style="background:#43d9a3;height:9px;width:88.5%;border-radius:10px"></div>
+  </div>
+  <p class="muted">Saves ÷ (Saves + Goals conceded)</p>
+ </div>
+
+ <div class="card">
+  <h3>Progression</h3>
+  <div id="progress" class="muted">Your match stats will appear here.</div>
+ </div>
+</div>
+
+<!-- PICS -->
+<div class="page" id="pics">
+ <h2>📸 Photos & Videos</h2>
+ <div class="card">
+  <h3>MY GALLERY</h3>
+  <p class="muted">Add your best goalkeeper moments.</p>
+  <input type="file" id="upload" accept="image/*,video/*" multiple>
+  <div class="gallery" id="gallery"></div>
+ </div>
+</div>
+
+<!-- HISTORY -->
+<div class="page" id="history">
+ <h2>📅 Match History</h2>
+
+ <div class="card">
+  <h3>ADD NEW MATCH</h3>
+  <input id="opponent" placeholder="Opponent name">
+  <input id="date" type="date">
+  <input id="teamScore" type="number" min="0" placeholder="Your team score">
+  <input id="oppScore" type="number" min="0" placeholder="Opponent score">
+  <input id="savesInput" type="number" min="0" placeholder="Your saves">
+  <button onclick="addMatch()" style="width:100%">+ SAVE MATCH</button>
+ </div>
+
+ <h3>ALL MATCHES</h3>
+ <div id="historyList"></div>
+</div>
+
+<nav>
+ <button class="active" onclick="showPage('main',this)">🏠<br>Main</button>
+ <button onclick="showPage('stats',this)">📊<br>Stats</button>
+ <button onclick="showPage('pics',this)">📸<br>Pics</button>
+ <button onclick="showPage('history',this)">📅<br>History</button>
+</nav>
+
+<script>
+const KEY="gk_tracker_matches";
+
+let matches=JSON.parse(localStorage.getItem(KEY)) || [
+ {opponent:"Match 1",date:"",score:5,against:1,saves:15},
+ {opponent:"Match 2",date:"",score:4,against:2,saves:8}
+];
+
+function showPage(id,btn){
+ document.querySelectorAll(".page").forEach(
+  p=>p.classList.remove("active")
+ );
+ document.getElementById(id).classList.add("active");
+
+ document.querySelectorAll("nav button").forEach(
+  b=>b.classList.remove("active")
+ );
+ btn.classList.add("active");
+}
+
+function update(){
+ let n=matches.length;
+ let saves=matches.reduce((a,m)=>a+m.saves,0);
+ let goals=matches.reduce((a,m)=>a+m.against,0);
+ let wins=matches.filter(m=>m.score>m.against).length;
+ let draws=matches.filter(m=>m.score===m.against).length;
+ let losses=n-wins-draws;
+ let rate=saves+goals ? saves/(saves+goals)*100 : 0;
+
+ const put=(id,v)=>{
+  document.getElementById(id).textContent=v;
+ };
+
+ put("mainSaves",saves);
+ put("mainMatches",n);
+ put("mainWins",wins);
+ put("mainGoals",goals);
+ put("mainRate",rate.toFixed(1)+"%");
+
+ put("sMatches",n);
+ put("sSaves",saves);
+ put("sGoals",goals);
+ put("sWins",wins);
+ put("sDraws",draws);
+ put("sLosses",losses);
+ put("saveRate",rate.toFixed(1)+"%");
+ document.getElementById("rateBar").style.width=rate+"%";
+
+ if(n){
+  let last=matches[n-1];
+  put("lastMatch",last.opponent+" | "+last.score+
+  " - "+last.against+" | "+last.saves+" Saves");
+ }
+
+ let clean=matches.filter(m=>m.against===0).length;
+ document.getElementById("progress").innerHTML=
+ `Clean sheets: ${clean}<br>
+ Average saves per match: ${n?(saves/n).toFixed(1):0}<br>
+ Wins: ${wins} / ${n}<br>
+ Compare your match-by-match performance in History.`;
+
+ document.getElementById("historyList").innerHTML=
+ [...matches].reverse().map(m=>`
+ <div class="match">
+  <b>${escapeHTML(m.opponent)}</b>
+  <h2>${m.score} - ${m.against}</h2>
+  <div class="muted">${m.date||"Date not set"}</div>
+  <p class="green">🧤 ${m.saves} Saves</p>
+ </div>
+ `).join("") || "No matches yet";
+
+ localStorage.setItem(KEY,JSON.stringify(matches));
+}
+
+function escapeHTML(s){
+ return String(s).replace(/[&<>"']/g,c=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",
+  '"':"&quot;","'":"&#39;"
+ }[c]));
+}
+
+function addMatch(){
+ let opponent=document.getElementById("opponent").value.trim();
+ let date=document.getElementById("date").value;
+ let score=document.getElementById("teamScore").value;
+ let against=document.getElementById("oppScore").value;
+ let saves=document.getElementById("savesInput").value;
+
+ if(!opponent||score===""||against===""||saves===""){
+  alert("Fill all match details!");
+  return;
+ }
+
+ if([score,against,saves].some(x=>
+  !Number.isSafeInteger(Number(x))||Number(x)<0)){
+  alert("Enter valid numbers!");
+  return;
+ }
+
+ matches.push({
+  opponent,date,
+  score:Number(score),
+  against:Number(against),
+  saves:Number(saves)
+ });
+
+ ["opponent","date","teamScore","oppScore","savesInput"]
+ .forEach(id=>document.getElementById(id).value="");
+
+ update();
+ alert("Match saved!");
+}
+
+// Save gallery files in IndexedDB
+let db;
+
+const request=indexedDB.open("GKTrackerMedia",1);
+
+request.onupgradeneeded=e=>{
+ let database=e.target.result;
+ database.createObjectStore("media",{keyPath:"id",autoIncrement:true});
+};
+
+request.onsuccess=e=>{
+ db=e.target.result;
+ loadGallery();
+};
+
+function loadGallery(){
+ if(!db)return;
+ let tx=db.transaction("media","readonly");
+ tx.objectStore("media").getAll().onsuccess=e=>{
+  let gallery=document.getElementById("gallery");
+  gallery.innerHTML="";
+  e.target.result.forEach(item=>displayMedia(item));
+ };
+}
+
+function displayMedia(item){
+ let url=URL.createObjectURL(item.file);
+ let el=document.createElement(
+  item.file.type.startsWith("video")?"video":"img"
+ );
+ el.src=url;
+ if(el.tagName==="VIDEO")el.controls=true;
+ document.getElementById("gallery").appendChild(el);
+}
+
+document.getElementById("upload").addEventListener("change",e=>{
+ if(!db)return alert("Gallery is loading. Try again.");
+ [...e.target.files].forEach(file=>{
+  let tx=db.transaction("media","readwrite");
+  tx.objectStore("media").add({
+   file,name:file.name
+  });
+  tx.oncomplete=loadGallery;
+ });
+ e.target.value="";
+});
+
+update();
+</script>
+</body>
+</html>

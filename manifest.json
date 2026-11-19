@@ -1,0 +1,12 @@
+
+{
+  "name": "GK Tracker",
+  "short_name": "GK Tracker",
+  "description": "My Goalkeeper Career",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#080e19",
+  "theme_color": "#080e19",
+  "icons": []
+}
